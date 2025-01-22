@@ -3,7 +3,7 @@
 #include <vector>
 using namespace std;
 
-// تعريف هيكل بيانات المستخدم
+// تعريق هيكل بيانات المستخدم
 struct User {
     string name;
     long long id;
