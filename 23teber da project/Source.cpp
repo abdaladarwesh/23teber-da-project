@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 // تعريق هيكل بيانات المستخدم
@@ -10,9 +11,10 @@ struct User {
     int money;
     string password;
 };
+vector<User> users; // قائمة المستخدمين الديناميكية
 
 // دالة لعرض بيانات جميع المستخدمين (للإداري فقط)
-void displayAllUsers(const vector<User>& users) {
+void displayAllUsers(const vector<User> &users) {
     if (users.empty()) {
         cout << "\nNo users available.\n";
         return;
@@ -34,8 +36,9 @@ void userOperations(User& user) {
         cout << "1- Check Balance\n";
         cout << "2- Deposit\n";
         cout << "3- Withdraw\n";
-        cout << "4- Return to Main Menu\n";
-        cout << "5- Exit\n";
+        cout << "4- Transfer Money \n";
+        cout << "5- Return to Main Menu\n";
+        cout << "6- Exit\n";
         cout << "Enter your choice: ";
         cin >> operation;
 
@@ -64,10 +67,41 @@ void userOperations(User& user) {
             }
             break;
         }
-        case 4:
+        case 4: {
+            long long recipientId;
+            cout << "Enter the ID of the recipient: ";
+            cin >> recipientId;
+
+            auto recipientIt = find_if(users.begin(), users.end(), [&](const User& u) {
+                return u.id == recipientId;
+                });
+
+            if (recipientIt != users.end()) {
+                int transferAmount;
+                cout << "Enter the amount to transfer: ";
+                cin >> transferAmount;
+
+                if (transferAmount > 0 && transferAmount <= user.money) {
+                    user.money -= transferAmount;
+                    recipientIt->money += transferAmount;
+                    cout << "Transfer successful! You sent " << transferAmount
+                        << " EGP to " << recipientIt->name << ".\n";
+                    cout << "Your new balance: " << user.money << " EGP\n";
+                }
+                else {
+                    cout << "Transfer failed! Check the amount or your balance.\n";
+                }
+            }
+            else {
+                cout << "Recipient not found! Please check the ID and try again.\n";
+            }
+            break;
+        }
+
+        case 5:
             cout << "Returning to Main Menu...\n";
             return; // الرجوع إلى القائمة الرئيسية
-        case 5:
+        case 6:
             cout << "Exiting... Goodbye!\n";
             exit(0); // إنهاء البرنامج بالكامل
         default:
@@ -77,10 +111,8 @@ void userOperations(User& user) {
 }
 
 int main() {
-    const long long id_admin = 112534697800; // ID الخاص بالمدير
-    string adminPassword = "admin123";      // كلمة مرور المدير
-
-    vector<User> users; // قائمة المستخدمين الديناميكية
+    const long long id_admin = 123; // ID الخاص بالمدير
+    const string adminPassword = "admin123"; // كلمة مرور المدير
 
     while (true) {
         cout << "Enter your ID: ";
