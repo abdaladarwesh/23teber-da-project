@@ -68,20 +68,20 @@ void userOperations(User& user) {
             break;
         }
         case 4: {
-            long long recipientId;
+            long long recipientId; // the id u want to trnfer the money to
             cout << "Enter the ID of the recipient: ";
             cin >> recipientId;
 
             auto recipientIt = find_if(users.begin(), users.end(), [&](const User& u) {
                 return u.id == recipientId;
-                });
+                }); // to see if the user on the system or not
 
             if (recipientIt != users.end()) {
                 int transferAmount;
                 cout << "Enter the amount to transfer: ";
                 cin >> transferAmount;
 
-                if (transferAmount > 0 && transferAmount <= user.money) {
+                if (transferAmount > 0 && transferAmount <= user.money) { // to check ur balance
                     user.money -= transferAmount;
                     recipientIt->money += transferAmount;
                     cout << "Transfer successful! You sent " << transferAmount
@@ -90,6 +90,7 @@ void userOperations(User& user) {
                 }
                 else {
                     cout << "Transfer failed! Check the amount or your balance.\n";
+                    cout << "Your balance now is : " << user.money << " EGP\n";
                 }
             }
             else {
