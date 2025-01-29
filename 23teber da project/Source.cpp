@@ -7,7 +7,8 @@ using namespace std;
 // تعريق هيكل بيانات المستخدم
 struct User {
     string name;
-    long long id;
+    long long id = 0;
+    long long phone_num;
     int money;
     string password;
 };
@@ -23,6 +24,7 @@ void displayAllUsers(const vector<User> &users) {
     for (const auto& user : users) {
         cout << "Name: " << user.name << "\n";
         cout << "ID: " << user.id << "\n";
+        cout << "Phone number: " << user.phone_num << "\n";
         cout << "Balance: " << user.money << " EGP\n";
         cout << "-------------------------\n";
     }
@@ -68,18 +70,22 @@ void userOperations(User& user) {
             break;
         }
         case 4: {
-            long long recipientId; // the id u want to trnfer the money to
-            cout << "Enter the ID of the recipient: ";
-            cin >> recipientId;
+            long long recipientNum; // the id u want to trnfer the money to
+            cout << "Enter the Phone number of the recipient: ";
+            cin >> recipientNum;
 
             auto recipientIt = find_if(users.begin(), users.end(), [&](const User& u) {
-                return u.id == recipientId;
+                return u.phone_num == recipientNum;
                 }); // to see if the user on the system or not
 
             if (recipientIt != users.end()) {
                 int transferAmount;
+                string Checkingpassword;
                 cout << "Enter the amount to transfer: ";
                 cin >> transferAmount;
+                cout << "Enter the password: ";
+                cin >> Checkingpassword;
+                if (Checkingpassword == user.password) {
 
                 if (transferAmount > 0 && transferAmount <= user.money) { // to check ur balance
                     user.money -= transferAmount;
@@ -92,9 +98,14 @@ void userOperations(User& user) {
                     cout << "Transfer failed! Check the amount or your balance.\n";
                     cout << "Your balance now is : " << user.money << " EGP\n";
                 }
+                }
+                else {
+                    cout << "wrong password !! please try again \n";
+                }
+
             }
             else {
-                cout << "Recipient not found! Please check the ID and try again.\n";
+                cout << "Recipient not found! Please check the number and try again.\n";
             }
             break;
         }
@@ -116,11 +127,11 @@ int main() {
     const string adminPassword = "admin123"; // كلمة مرور المدير
 
     while (true) {
-        cout << "Enter your ID: ";
-        long long id_guest;
-        cin >> id_guest;
+        cout << "Enter your Phone Number: ";
+        long long num_guest;
+        cin >> num_guest;
 
-        if (id_guest == id_admin) {
+        if (num_guest == id_admin) {
             string password;
             cout << "Enter admin password: ";
             cin >> password;
@@ -164,7 +175,7 @@ int main() {
 
                 // البحث عن المستخدم
                 auto it = find_if(users.begin(), users.end(), [&](const User& user) {
-                    return user.id == id_guest && user.password == password;
+                    return user.phone_num == num_guest && user.password == password;
                     });
 
                 if (it != users.end()) {
@@ -179,10 +190,10 @@ int main() {
             else if (accountType == 1) {
                 // إنشاء حساب جديد
                 User newUser;
-                newUser.id = id_guest;
+                newUser.phone_num = num_guest;
                 cout << "Enter a password for your new account: ";
                 cin >> newUser.password;
-                newUser.money = 0; // الرصيد الافتراضي
+                newUser.money = 50; // الرصيد الافتراضي
                 cout << "Enter your name: ";
                 cin >> newUser.name;
                 users.push_back(newUser);
