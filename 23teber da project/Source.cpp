@@ -45,9 +45,37 @@ void userOperations(User& user) {
         cin >> operation;
 
         switch (operation) {
-        case 1:
-            cout << "Your current balance: " << user.money << " EGP\n";
+        case 1: 
+        {
+            bool con = true;
+            int numsOfTrying = 3;
+            while (con)
+            {
+                if (numsOfTrying != 0)
+                {
+                    string checkPassword;
+                    cout << "please enter your password : ";
+                    cin >> checkPassword;
+                    if (checkPassword == user.password)
+                    {
+                        cout << "Your current balance: " << user.money << " EGP\n";
+                        con = false;
+                    }
+                    else
+                    {
+                        cout << "worng password please try again\n";
+                        numsOfTrying--;
+                    }
+                }
+                else
+                {
+                    cout << "too Many attempts entering the wrong password , signing out.....\n";
+                    return;
+                }
+            }
+
             break;
+        }
         case 2: {
             int deposit;
             cout << "Enter the amount to deposit: ";
@@ -61,51 +89,88 @@ void userOperations(User& user) {
             cout << "Enter the amount to withdraw: ";
             cin >> withdraw;
             if (withdraw <= user.money) {
-                user.money -= withdraw;
-                cout << "Withdraw successful! New balance: " << user.money << " EGP\n";
+                bool con = true;
+                int numsOfTrying = 3;
+                while (con)
+                {
+                    if (numsOfTrying != 0)
+                    {
+                        string checkPassword;
+                        cout << "please enter your password : ";
+                        cin >> checkPassword;
+                        if (checkPassword == user.password)
+                        {
+                            user.money -= withdraw;
+                            cout << "Withdraw successful! New balance: " << user.money << " EGP\n";
+                            con = false;
+                        }
+                        else
+                        {
+                            cout << "worng password please try again\n";
+                            numsOfTrying--;
+                        }
+                    }
+                    else
+                    {
+                        cout << "too Many attempts entering the wrong password , signing out.....\n";
+                        return;
+                    }
+                }
+
             }
             else {
-                cout << "Insufficient balance! Current balance: " << user.money << " EGP\n";
+                cout << "Insufficient balance! you want to withdraw " << withdraw << " EGP Current balance : " << user.money << " EGP\n";
             }
             break;
         }
         case 4: {
-            long long recipientNum; // the id u want to trnfer the money to
-            cout << "Enter the Phone number of the recipient: ";
-            cin >> recipientNum;
+            long long usernum;
+            cout << "Enter the number you want to trnsfer to : ";
+            cin >> usernum;
+            auto it = find_if(users.begin(), users.end(), [&](const User u) {return usernum == u.phone_num;});
+            if (it != users.end())
+            {
 
-            auto recipientIt = find_if(users.begin(), users.end(), [&](const User& u) {
-                return u.phone_num == recipientNum;
-                }); // to see if the user on the system or not
+                int amountTransfer;
+                cout << "enter the amount : ";
+                cin >> amountTransfer;
+                if (amountTransfer <= user.money)
+                {
+                    int numsOfTrynig = 3;
+                    bool cond = true;
+                    while (cond) {
+                        if (numsOfTrynig != 0) {
 
-            if (recipientIt != users.end()) {
-                int transferAmount;
-                string Checkingpassword;
-                cout << "Enter the amount to transfer: ";
-                cin >> transferAmount;
-                cout << "Enter the password: ";
-                cin >> Checkingpassword;
-                if (Checkingpassword == user.password) {
-
-                if (transferAmount > 0 && transferAmount <= user.money) { // to check ur balance
-                    user.money -= transferAmount;
-                    recipientIt->money += transferAmount;
-                    cout << "Transfer successful! You sent " << transferAmount
-                        << " EGP to " << recipientIt->name << ".\n";
-                    cout << "Your new balance: " << user.money << " EGP\n";
+                            string CheckingPassword;
+                            cout << "enter the password : ";
+                            cin >> CheckingPassword;
+                            if (CheckingPassword == user.password)
+                            {
+                            user.money -= amountTransfer;
+                            it->money += amountTransfer;
+                            cout << "transfer successful! your balance now is " << user.money << endl;
+                            cond = false;
+                            }
+                            else {
+                                cout << "wrong password please try again\n";
+                                numsOfTrynig--;
+                            }
+                        }
+                        else
+                        {
+                            cout << "too Many attempts entering the wrong password , signing out.....\n";
+                            return;
+                        }
+                    }
                 }
-                else {
-                    cout << "Transfer failed! Check the amount or your balance.\n";
-                    cout << "Your balance now is : " << user.money << " EGP\n";
+                else
+                {
+                    cout << "Insufficient balance ! you want to transfer " << amountTransfer << " EGP and your balance is " << user.money << " EGP" << endl;
                 }
-                }
-                else {
-                    cout << "wrong password !! please try again \n";
-                }
-
             }
-            else {
-                cout << "Recipient not found! Please check the number and try again.\n";
+            else
+            {
+                cout << "non exsisting user please try again";
             }
             break;
         }
@@ -208,3 +273,4 @@ int main() {
 
     return 0;
 }
+
