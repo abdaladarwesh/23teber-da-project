@@ -4,7 +4,7 @@
 #include <algorithm>
 using namespace std;
 
-// تعريق هيكل بيانات المستخدم
+// تعريف هيكل بيانات المستخدم
 struct User {
     string name;
     long long id = 0;
@@ -13,22 +13,6 @@ struct User {
     string password;
 };
 vector<User> users; // قائمة المستخدمين الديناميكية
-
-// دالة لعرض بيانات جميع المستخدمين (للإداري فقط)
-void displayAllUsers(const vector<User> &users) {
-    if (users.empty()) {
-        cout << "\nNo users available.\n";
-        return;
-    }
-    cout << "\n===== All Users Data =====\n";
-    for (const auto& user : users) {
-        cout << "Name: " << user.name << "\n";
-        cout << "ID: " << user.id << "\n";
-        cout << "Phone number: " << user.phone_num << "\n";
-        cout << "Balance: " << user.money << " EGP\n";
-        cout << "-------------------------\n";
-    }
-}
 
 // دالة لإدارة العمليات الخاصة بالمستخدم العادي
 void userOperations(User& user) {
@@ -45,7 +29,7 @@ void userOperations(User& user) {
         cin >> operation;
 
         switch (operation) {
-        case 1: 
+        case 1:
         {
             bool con = true;
             int numsOfTrying = 3;
@@ -125,7 +109,7 @@ void userOperations(User& user) {
         }
         case 4: {
             long long usernum;
-            cout << "Enter the number you want to trnsfer to : ";
+            cout << "Enter the number you want to transfer to : ";
             cin >> usernum;
             auto it = find_if(users.begin(), users.end(), [&](const User u) {return usernum == u.phone_num;});
             if (it != users.end())
@@ -146,10 +130,10 @@ void userOperations(User& user) {
                             cin >> CheckingPassword;
                             if (CheckingPassword == user.password)
                             {
-                            user.money -= amountTransfer;
-                            it->money += amountTransfer;
-                            cout << "transfer successful! your balance now is " << user.money << endl;
-                            cond = false;
+                                user.money -= amountTransfer;
+                                it->money += amountTransfer;
+                                cout << "transfer successful! your balance now is " << user.money << endl;
+                                cond = false;
                             }
                             else {
                                 cout << "wrong password please try again\n";
@@ -170,7 +154,7 @@ void userOperations(User& user) {
             }
             else
             {
-                cout << "non exsisting user please try again";
+                cout << "non existing user please try again";
             }
             break;
         }
@@ -188,89 +172,61 @@ void userOperations(User& user) {
 }
 
 int main() {
-    const long long id_admin = 123; // ID الخاص بالمدير
-    const string adminPassword = "admin123"; // كلمة مرور المدير
-
     while (true) {
-        cout << "Enter your Phone Number: ";
         long long num_guest;
-        cin >> num_guest;
-
-        if (num_guest == id_admin) {
-            string password;
-            cout << "Enter admin password: ";
-            cin >> password;
-
-            if (password == adminPassword) {
-                cout << "\nWelcome, Administrator!\n";
-
-                int adminChoice;
-                do {
-                    cout << "\n===== Admin Menu =====\n";
-                    cout << "1- View All Users\n";
-                    cout << "2- Return to Main Menu\n";
-                    cout << "Enter your choice: ";
-                    cin >> adminChoice;
-
-                    switch (adminChoice) {
-                    case 1:
-                        displayAllUsers(users);
-                        break;
-                    case 2:
-                        cout << "Returning to Main Menu...\n";
-                        break; // الخروج من قائمة المدير والعودة إلى القائمة الرئيسية
-                    default:
-                        cout << "Invalid choice! Try again.\n";
-                    }
-                } while (adminChoice != 2);
+        bool validPhoneNumber = false;
+        while (!validPhoneNumber) {
+            cout << "Enter your Phone Number (must be 11 digits): ";
+            cin >> num_guest;
+            string phoneStr = to_string(num_guest);
+            if (phoneStr.length() == 10) {
+                validPhoneNumber = true;
             }
             else {
-                cout << "Invalid password! Access denied.\n";
+                cout << "Invalid phone number! Please enter exactly 11 digits.\n";
             }
         }
-        else {
-            cout << "Is this a new account or an existing account? (1- New, 2- Existing): ";
-            int accountType;
-            cin >> accountType;
 
-            if (accountType == 2) {
-                string password;
-                cout << "Enter your password: ";
-                cin >> password;
+        cout << "Is this a new account or an existing account? (1- New, 2- Existing): ";
+        int accountType;
+        cin >> accountType;
 
-                // البحث عن المستخدم
-                auto it = find_if(users.begin(), users.end(), [&](const User& user) {
-                    return user.phone_num == num_guest && user.password == password;
-                    });
+        if (accountType == 2) {
+            string password;
+            cout << "Enter your password: ";
+            cin >> password;
 
-                if (it != users.end()) {
-                    // تم العثور على المستخدم
-                    cout << "\nWelcome back, " << it->name << "!\n";
-                    userOperations(*it);
-                }
-                else {
-                    cout << "No matching account found! Please check your credentials.\n";
-                }
-            }
-            else if (accountType == 1) {
-                // إنشاء حساب جديد
-                User newUser;
-                newUser.phone_num = num_guest;
-                cout << "Enter a password for your new account: ";
-                cin >> newUser.password;
-                newUser.money = 50; // الرصيد الافتراضي
-                cout << "Enter your name: ";
-                cin >> newUser.name;
-                users.push_back(newUser);
-                cout << "\nWelcome, " << newUser.name << "! Your account has been created.\n";
-                userOperations(newUser);
+            // البحث عن المستخدم
+            auto it = find_if(users.begin(), users.end(), [&](const User& user) {
+                return user.phone_num == num_guest && user.password == password;
+                });
+
+            if (it != users.end()) {
+                // تم العثور على المستخدم
+                cout << "\nWelcome back, " << it->name << "!\n";
+                userOperations(*it);
             }
             else {
-                cout << "Invalid choice! Returning to the main menu.\n";
+                cout << "No matching account found! Please check your credentials.\n";
             }
+        }
+        else if (accountType == 1) {
+            // إنشاء حساب جديد
+            User newUser;
+            newUser.phone_num = num_guest;
+            cout << "Enter a password for your new account: ";
+            cin >> newUser.password;
+            newUser.money = 50; // الرصيد الافتراضي
+            cout << "Enter your name: ";
+            cin >> newUser.name;
+            users.push_back(newUser);
+            cout << "\nWelcome, " << newUser.name << "! Your account has been created.\n";
+            userOperations(newUser);
+        }
+        else {
+            cout << "Invalid choice! Returning to the main menu.\n";
         }
     }
 
     return 0;
 }
-
