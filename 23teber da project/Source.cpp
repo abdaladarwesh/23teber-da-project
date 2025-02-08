@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -6,7 +6,8 @@ using namespace std;
 
 // تعريف هيكل بيانات المستخدم
 struct User {
-    string name;
+    string first_name;
+    string last_name;
     long long id = 0;
     long long phone_num;
     int money;
@@ -203,7 +204,7 @@ int main() {
 
             if (it != users.end()) {
                 // تم العثور على المستخدم
-                cout << "\nWelcome back, " << it->name << "!\n";
+                cout << "\nWelcome back, " << it->first_name<< "!\n";
                 userOperations(*it);
             }
             else {
@@ -216,11 +217,13 @@ int main() {
             newUser.phone_num = num_guest;
             cout << "Enter a password for your new account: ";
             cin >> newUser.password;
-            newUser.money = 50; // الرصيد الافتراضي
-            cout << "Enter your name: ";
-            cin >> newUser.name;
+            newUser.money = 0; // الرصيد الافتراضي
+            cout << "Enter your first name: ";
+            cin >> newUser.first_name;
+            cout << "Enter your last name: ";
+            cin >> newUser.last_name;
             users.push_back(newUser);
-            cout << "\nWelcome, " << newUser.name << "! Your account has been created.\n";
+            cout << "\nWelcome, " << newUser.first_name +" " +newUser.last_name << "! Your account has been created.\n";
             userOperations(newUser);
         }
         else {
