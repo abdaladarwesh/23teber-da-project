@@ -16,7 +16,7 @@ struct User {
 vector<User> users; // قائمة المستخدمين الديناميكية
 
 // دالة لإدارة العمليات الخاصة بالمستخدم العادي
-void userOperations(User& user) 
+void userOperations(User& user)
 {
     int operation;
     do {
@@ -25,8 +25,10 @@ void userOperations(User& user)
         cout << "2- Deposit\n";
         cout << "3- Withdraw\n";
         cout << "4- Transfer Money \n";
-        cout << "5- Return to Main Menu\n";
-        cout << "6- Exit\n";
+        cout << "5- Change password \n";
+        cout << "6- Show profile \n";
+        cout << "7- Return to Main Menu\n";
+        cout << "8- Exit\n";
         cout << "Enter your choice: ";
         cin >> operation;
 
@@ -64,11 +66,11 @@ void userOperations(User& user)
             break;
         }
         case 2: {
-            int deposit;
-            cout << "Enter the amount to deposit: ";
-            cin >> deposit;
             bool con = true;
             int numsOfTrying = 3;
+            while (con)
+            {
+
             if (numsOfTrying != 0)
             {
                 string checkPassword;
@@ -76,8 +78,11 @@ void userOperations(User& user)
                 cin >> checkPassword;
                 if (checkPassword == user.password)
                 {
-            user.money += deposit;
-            cout << "Deposit successful! New balance: " << user.money << " EGP\n";
+                    int deposit;
+                    cout << "Enter the amount to deposit: ";
+                    cin >> deposit;
+                    user.money += deposit;
+                    cout << "Deposit successful! New balance: " << user.money << " EGP\n";
                     con = false;
                 }
                 else
@@ -91,6 +96,7 @@ void userOperations(User& user)
             {
                 cout << "too Many attempts entering the wrong password , signing out.....\n";
                 return;
+            }
             }
 
             break;
@@ -188,11 +194,98 @@ void userOperations(User& user)
             }
             break;
         }
-
         case 5:
+        {
+            bool con = true;
+            int numsOfTrying = 3;
+            while (con)
+            {
+                if (numsOfTrying != 0)
+                {
+                    string checkPassword;
+                    cout << "Please enter your current password: ";
+                    cin >> checkPassword;
+                    if (checkPassword == user.password)
+                    {
+                        string newPassword;
+                        cout << "Enter your new password: ";
+                        cin >> newPassword;
+                        user.password = newPassword; // Update password
+                        cout << "Password changed successfully!\n";
+                        con = false;
+                        return userOperations(user);
+                    }
+                    else
+                    {
+                        cout << "Wrong password! Please try again.\n";
+                        numsOfTrying--;
+                        cout << "You have " << numsOfTrying << " attempts remaining before signing out.\n";
+                    }
+                }
+                else
+                {
+                    cout << "Too many incorrect attempts. Signing out...\n";
+                    return;
+                }
+            }
+            break;
+        }
+        case 6:
+        {
+            bool con = true;
+            int numsOfTrying = 3;
+            while (con)
+            {
+                if (numsOfTrying != 0)
+                {
+                    string checkPassword;
+                    cout << "please enter your password : ";
+                    cin >> checkPassword;
+                    if (checkPassword == user.password)
+                    {
+                        while (true)
+                        {
+
+                        int choice;
+                        cout << "=========== " << user.first_name << " " << user.last_name << " profile ===========\n";
+                        cout << "The full name " << user.first_name << " " << user.last_name << endl;
+                        cout << "The phone number " << user.phone_num << endl;
+                        cout << "The balance " << user.money << endl;
+                        cout << "The password " << user.password << endl;
+                        cout << "1- Return to main menu \n";
+                        cout << "enter your choice : ";
+                        cin >> choice;
+                        if (choice == 1)
+                        {
+                            return userOperations(user);
+                        }
+                        else {
+                            cout << "incorrect operation!\n";
+                        }
+                    }
+                        con = false;
+                        }
+                    else
+                    {
+                        cout << "worng password please try again\n";
+                        numsOfTrying--;
+                        cout << "worng password you have " << numsOfTrying << " attempts to enter the right password befor signing out please try again\n";
+                    }
+                }
+                else
+                {
+                    cout << "too Many attempts entering the wrong password , signing out.....\n";
+                    return;
+                }
+            }
+
+        }
+
+
+        case 7:
             cout << "Returning to Main Menu...\n";
             return; // الرجوع إلى القائمة الرئيسية
-        case 6:
+        case 8:
             cout << "Exiting... Goodbye!\n";
             exit(0); // إنهاء البرنامج بالكامل
         default:
@@ -214,11 +307,11 @@ int main() {
             else {
                 if (num_guest.length() > 11)
                 {
-                cout << "Invalid phone number! The number is more than 11 digits Please enter exactly 11 digits.\n";
+                    cout << "Invalid phone number! The number is more than 11 digits Please enter exactly 11 digits.\n";
                 }
                 else if (num_guest.length() < 11)
                 {
-                cout << "Invalid phone number! The number is less than 11 digits Please enter exactly 11 digits.\n";
+                    cout << "Invalid phone number! The number is less than 11 digits Please enter exactly 11 digits.\n";
                 }
             }
         }
@@ -239,7 +332,7 @@ int main() {
 
             if (it != users.end()) {
                 // تم العثور على المستخدم
-                cout << "\nWelcome back, " << it->first_name<< "!\n";
+                cout << "\nWelcome back, " << it->first_name << "!\n";
                 userOperations(*it);
             }
             else {
@@ -258,7 +351,7 @@ int main() {
             cout << "Enter your last name: ";
             cin >> newUser.last_name;
             users.push_back(newUser);
-            cout << "\nWelcome, " << newUser.first_name +" " +newUser.last_name << "! Your account has been created.\n";
+            cout << "\nWelcome, " << newUser.first_name + " " + newUser.last_name << "! Your account has been created.\n";
             userOperations(newUser);
         }
         else {
