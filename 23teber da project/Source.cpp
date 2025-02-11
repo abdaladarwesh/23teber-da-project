@@ -9,14 +9,15 @@ struct User {
     string first_name;
     string last_name;
     long long id = 0;
-    long long phone_num;
+    string phone_num;
     int money;
     string password;
 };
 vector<User> users; // قائمة المستخدمين الديناميكية
 
 // دالة لإدارة العمليات الخاصة بالمستخدم العادي
-void userOperations(User& user) {
+void userOperations(User& user) 
+{
     int operation;
     do {
         cout << "\nChoose your operation:\n";
@@ -50,6 +51,7 @@ void userOperations(User& user) {
                     {
                         cout << "worng password please try again\n";
                         numsOfTrying--;
+                        cout << "worng password you have " << numsOfTrying << " attempts to enter the right password befor signing out please try again\n";
                     }
                 }
                 else
@@ -65,8 +67,32 @@ void userOperations(User& user) {
             int deposit;
             cout << "Enter the amount to deposit: ";
             cin >> deposit;
+            bool con = true;
+            int numsOfTrying = 3;
+            if (numsOfTrying != 0)
+            {
+                string checkPassword;
+                cout << "please enter your password : ";
+                cin >> checkPassword;
+                if (checkPassword == user.password)
+                {
             user.money += deposit;
             cout << "Deposit successful! New balance: " << user.money << " EGP\n";
+                    con = false;
+                }
+                else
+                {
+                    cout << "worng password please try again\n";
+                    numsOfTrying--;
+                    cout << "worng password you have " << numsOfTrying << " attempts to enter the right password befor signing out please try again\n";
+                }
+            }
+            else
+            {
+                cout << "too Many attempts entering the wrong password , signing out.....\n";
+                return;
+            }
+
             break;
         }
         case 3: {
@@ -93,6 +119,7 @@ void userOperations(User& user) {
                         {
                             cout << "worng password please try again\n";
                             numsOfTrying--;
+                            cout << "worng password you have " << numsOfTrying << " attempts to enter the right password befor signing out please try again\n";
                         }
                     }
                     else
@@ -109,7 +136,7 @@ void userOperations(User& user) {
             break;
         }
         case 4: {
-            long long usernum;
+            string usernum;
             cout << "Enter the number you want to transfer to : ";
             cin >> usernum;
             auto it = find_if(users.begin(), users.end(), [&](const User u) {return usernum == u.phone_num;});
@@ -139,6 +166,7 @@ void userOperations(User& user) {
                             else {
                                 cout << "wrong password please try again\n";
                                 numsOfTrynig--;
+                                cout << "worng password you have " << numsOfTrynig << " attempts to enter the right password befor signing out please try again\n";
                             }
                         }
                         else
@@ -151,6 +179,7 @@ void userOperations(User& user) {
                 else
                 {
                     cout << "Insufficient balance ! you want to transfer " << amountTransfer << " EGP and your balance is " << user.money << " EGP" << endl;
+                    break;
                 }
             }
             else
@@ -174,17 +203,23 @@ void userOperations(User& user) {
 
 int main() {
     while (true) {
-        long long num_guest;
+        string num_guest;
         bool validPhoneNumber = false;
         while (!validPhoneNumber) {
             cout << "Enter your Phone Number (must be 11 digits): ";
             cin >> num_guest;
-            string phoneStr = to_string(num_guest);
-            if (phoneStr.length() == 10) {
+            if (num_guest.length() == 11) {
                 validPhoneNumber = true;
             }
             else {
-                cout << "Invalid phone number! Please enter exactly 11 digits.\n";
+                if (num_guest.length() > 11)
+                {
+                cout << "Invalid phone number! The number is more than 11 digits Please enter exactly 11 digits.\n";
+                }
+                else if (num_guest.length() < 11)
+                {
+                cout << "Invalid phone number! The number is less than 11 digits Please enter exactly 11 digits.\n";
+                }
             }
         }
 
